@@ -9,7 +9,7 @@ export default {
   head: {
     title: '17Live_todolist',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'zh-TW'
     },
     meta: [
       { charset: 'utf-8' },
@@ -35,7 +35,12 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
+    '@nuxtjs/style-resources'
   ],
+
+  styleResources: {
+    scss: ['./assets/scss/*.scss']
+  },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
