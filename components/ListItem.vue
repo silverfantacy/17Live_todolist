@@ -1,13 +1,13 @@
 <template>
     <div class="list_item">
         <input type="checkbox" />
-        <div class="check_btn">
-            <iconCheckbox/>
-            <iconCheckboxChecked/>
+        <div class="check_btn" @click="complete(todo)">
+            <iconCheckboxChecked v-if="todo.completed" />
+            <iconCheckbox v-else/>
         </div>
-        <p>我要成為海賊王</p>
+        <p @click="complete(todo)" :class="{'complete': todo.completed}">{{todo.content}}</p>
         <div class="config">
-            <button class="delete_btn"><iconTrash/></button>
+            <button class="delete_btn" @click="remove(todo)"><iconTrash/></button>
         </div>
     </div>
 </template>
@@ -20,7 +20,15 @@ import iconCheckboxChecked from "~/assets/img/icon/checkbox_check.svg?inline";
 export default {
     name: "ListItem",
     components: { iconTrash, iconCheckbox, iconCheckboxChecked },
-
+    props: ['todo'],
+    methods: {
+        complete: function(item) {
+            this.$emit('completeTodo', item)
+        },
+        remove: function(item) {
+            this.$emit('removeTodo', item)
+        }
+    },
 }
 </script>
 
@@ -35,6 +43,14 @@ export default {
     .config {
         margin-left: auto;
     }
+    p {
+        word-break: break-word;
+        cursor: pointer;
+        &.complete {
+            color: $primary;
+            text-decoration: line-through;
+        }
+    }
 }
 
 .check_btn,
@@ -44,11 +60,13 @@ export default {
 }
 
 .check_btn {
+    flex: 0 0 44px;
     display: flex;
     align-items: center;
 }
 
 .delete_btn {
+    flex: 0 0 44px;
     border: none;
     background: transparent;
 }

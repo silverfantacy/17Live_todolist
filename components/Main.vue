@@ -4,45 +4,82 @@
             <div class="card">
                 <h2 class="card_title">Todo List</h2>
                 <ul>
-                    <li>
-                        <div class="list_item">
-                            <input type="checkbox" />
-                            <div class="check_btn">
-                                <iconCheckbox/>
-                                <iconCheckboxChecked/>
-                            </div>
-                            <p>我要成為海賊王</p>
-                            <div class="config">
-                                <button class="delete_btn"><iconTrash/></button>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <ListItem />
-                    </li>
-                    <li>
-                        <ListItem />
-                    </li>
-                    <li>
-                        <ListItem />
+                    <li v-for="(todo, key) in filterTodos" :key="key">
+                        <ListItem :todo="todo" @completeTodo="completeTodo" @removeTodo="removeTodo" />
                     </li>
                 </ul>
+    
+                <div class="input_block">
+                    <input type="text" name="content" placeholder="請輸入要做的事情" v-model="newTodo" @keyup.enter="addTodo(newTodo)" />
+                    <button @click="addTodo(newTodo)">
+                                      <iconPlus />
+                                    </button>
+                </div>
             </div>
         </div>
     </main>
 </template>
 
 <script>
-import iconBar from "~/assets/img/icon/bar.svg?inline";
-import iconSignOut from "~/assets/img/icon/sign-out-alt-solid.svg?inline";
-import iconTrash from "~/assets/img/icon/trash-alt-solid.svg?inline";
-import iconCheckbox from "~/assets/img/icon/checkbox.svg?inline";
-import iconCheckboxChecked from "~/assets/img/icon/checkbox_check.svg?inline";
+import iconPlus from "~/assets/img/icon/plus.svg?inline";
 import ListItem from "./ListItem";
 
 export default {
     name: "Main",
-    components: { iconBar, iconSignOut, iconTrash, iconCheckbox, iconCheckboxChecked, ListItem },
+    components: { iconPlus, ListItem },
+    data() {
+        return {
+            todos: [],
+            filterTodos: [],
+            newTodo: '',
+            canuse: true
+        }
+    },
+    methods: {
+        addTodo: function(todo) {
+            if (!this.canuse || !this.newTodo) return
+            this.canuse = false
+            this.$nuxt.$loading.start()
+            setTimeout(() => {
+                this.$nuxt.$loading.finish()
+                this.todos.push({
+                    content: todo,
+                    completed: false
+                });
+                this.newTodo = '';
+                this.filterTodos = this.todos;
+                this.canuse = true
+            }, 1000)
+
+        },
+        removeTodo: function(todo) {
+            if (!this.canuse) return
+            this.canuse = false
+            this.$nuxt.$loading.start()
+            setTimeout(() => {
+                this.$nuxt.$loading.finish()
+                this.todos.splice(this.todos.indexOf(todo), 1);
+                this.canuse = true
+            }, 1000)
+        },
+        completeTodo: function(todo) {
+            if (!this.canuse) return
+            let index = this.todos.indexOf(todo);
+            this.todos[index].completed = !todo.completed
+        }
+    },
+    mounted() {
+        this.todos = [{
+                content: '我要成為海賊王',
+                completed: false
+            },
+            {
+                content: '我在HandsUP 前測',
+                completed: true
+            }
+        ]
+        this.filterTodos = this.todos;
+    },
 };
 </script>
 
@@ -63,6 +100,9 @@ main {
     border: 1px solid $border;
     box-sizing: border-box;
     border-radius: $border_radius;
+    display: flex;
+    flex-direction: column;
+    min-height: 85vh;
     &_title {
         margin: 0;
         font-weight: bold;
@@ -76,31 +116,23 @@ ul {
     padding: 0;
 }
 
-.list_item {
+.input_block {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    [type="checkbox"] {
-        display: none;
+    height: 34px;
+    margin: auto -17px 10px -10px;
+    input {
+        width: 100%;
+        padding-left: 14px;
     }
-    .config {
-        margin-left: auto;
+    button {
+        width: 35px;
+        height: 100%;
+        border: none;
+        border-radius: $border_radius;
+        background: $primary;
+        margin-left: 25px;
+        cursor: pointer;
+        @include flex_center;
     }
-}
-
-.check_btn,
-.delete_btn {
-    padding: 12px;
-    cursor: pointer;
-}
-
-.check_btn {
-    display: flex;
-    align-items: center;
-}
-
-.delete_btn {
-    border: none;
-    background: transparent;
 }
 </style>

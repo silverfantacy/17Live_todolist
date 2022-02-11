@@ -36,23 +36,23 @@ header {
 }
 
 .btn {
-  width: 55px;
+    width: 55px;
     height: 55px;
-
     @include flex_center;
 }
+
 .sidebar-btn {
-    
+    flex: 0 0 55px;
 }
 
 .logo_title {
-  font-size: 36px;
-  line-height: 55px;
-
-  color: white;
-  margin-right: auto;
+    font-size: 36px;
+    line-height: 55px;
+    color: white;
+    margin-right: auto;
 }
-.sign_out-btn{
-  
+
+.sign_out-btn {
+    flex: 0 0 55px;
 }
 </style>

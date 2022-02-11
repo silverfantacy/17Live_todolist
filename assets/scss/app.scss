@@ -7,6 +7,10 @@ body {
   background-color: $background;
 }
 
+a {
+  text-decoration: none;
+}
+
 @mixin flex_center {
   display: flex;
   justify-content: center;
