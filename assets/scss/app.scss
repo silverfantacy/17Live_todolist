@@ -1,1 +1,14 @@
-$cool: #0088cc;
+$primary: #8DC8FF;
+$background: #F8F8F8;
+$border: #C7C3C6;
+$border_radius: 4px;
+
+body {
+  background-color: $background;
+}
+
+@mixin flex_center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
