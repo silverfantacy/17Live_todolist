@@ -10,10 +10,10 @@
                 </ul>
     
                 <div class="input_block">
-                    <input type="text" name="content" placeholder="請輸入要做的事情" v-model="newTodo" @keyup.enter="addTodo(newTodo)" />
+                    <input type="text" name="content" placeholder="請輸入要做的事情" v-model="newTodo" @keyup.enter="addTodo(newTodo)" :disabled="!canuse" />
                     <button @click="addTodo(newTodo)">
-                                      <iconPlus />
-                                    </button>
+                      <iconPlus />
+                    </button>
                 </div>
             </div>
         </div>
@@ -30,10 +30,18 @@ export default {
     data() {
         return {
             todos: [],
-            filterTodos: [],
             newTodo: '',
             canuse: true
         }
+    },
+    computed: {
+        filterTodos: {
+          get: function () {
+              return this.$store.state.todos.todos;
+          },
+          set: function () {
+          }
+        },
     },
     methods: {
         addTodo: function(todo) {
@@ -42,12 +50,14 @@ export default {
             this.$nuxt.$loading.start()
             setTimeout(() => {
                 this.$nuxt.$loading.finish()
-                this.todos.push({
+
+                let item = {
                     content: todo,
                     completed: false
-                });
+                }
+
+                this.$store.commit('todos/add', item)
                 this.newTodo = '';
-                this.filterTodos = this.todos;
                 this.canuse = true
             }, 1000)
 
@@ -58,14 +68,13 @@ export default {
             this.$nuxt.$loading.start()
             setTimeout(() => {
                 this.$nuxt.$loading.finish()
-                this.todos.splice(this.todos.indexOf(todo), 1);
+                this.$store.commit('todos/remove', todo)
                 this.canuse = true
             }, 1000)
         },
         completeTodo: function(todo) {
             if (!this.canuse) return
-            let index = this.todos.indexOf(todo);
-            this.todos[index].completed = !todo.completed
+            this.$store.commit('todos/complete', todo)
         }
     },
     mounted() {
